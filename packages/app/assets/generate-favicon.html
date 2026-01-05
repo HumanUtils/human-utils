@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Human Utils Favicon Generator</title>
+  <style>
+    body {
+      font-family: monospace;
+      background: #111827;
+      color: #F9FAFB;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      text-align: center;
+      max-width: 800px;
+    }
+    h1 {
+      color: #10B981;
+      margin-bottom: 10px;
+    }
+    .instructions {
+      background: #1F2937;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: left;
+    }
+    .instructions h2 {
+      color: #10B981;
+      margin-top: 0;
+    }
+    .instructions code {
+      background: #111827;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #10B981;
+    }
+    .instructions ol {
+      padding-left: 20px;
+    }
+    .instructions li {
+      margin: 10px 0;
+    }
+    canvas {
+      border: 2px solid #10B981;
+      margin: 20px 0;
+      background: #111827;
+    }
+    button {
+      background: #10B981;
+      color: #111827;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-family: monospace;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 6px;
+      margin: 10px;
+    }
+    button:hover {
+      background: #059669;
+    }
+    .preview-grid {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    .preview-item {
+      text-align: center;
+    }
+    .preview-item canvas {
+      display: block;
+      margin: 10px auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>&gt;_ Human Utils Favicon Generator</h1>
+    <p>Generate favicon images for your app</p>
+
+    <div class="instructions">
+      <h2>Quick Instructions:</h2>
+      <ol>
+        <li>Click the buttons below to download favicons in different sizes</li>
+        <li>Replace <code>packages/app/assets/favicon.png</code> with the 48x48 version</li>
+        <li>For iOS, save the 180x180 version as <code>apple-touch-icon.png</code></li>
+        <li>Restart your Expo server to see changes</li>
+      </ol>
+    </div>
+
+    <div class="preview-grid">
+      <div class="preview-item">
+        <canvas id="favicon32" width="32" height="32"></canvas>
+        <button onclick="downloadFavicon(32)">Download 32×32</button>
+      </div>
+      <div class="preview-item">
+        <canvas id="favicon48" width="48" height="48"></canvas>
+        <button onclick="downloadFavicon(48)">Download 48×48 (Main)</button>
+      </div>
+      <div class="preview-item">
+        <canvas id="favicon180" width="180" height="180"></canvas>
+        <button onclick="downloadFavicon(180)">Download 180×180 (iOS)</button>
+      </div>
+    </div>
+
+    <div class="instructions">
+      <h2>Alternative: Use Online Tool</h2>
+      <p>For production-ready favicons with all sizes and formats:</p>
+      <ol>
+        <li>Visit <a href="https://realfavicongenerator.net/" target="_blank" style="color: #10B981;">RealFaviconGenerator.net</a></li>
+        <li>Download the SVG file from <code>packages/app/assets/logo-icon.svg</code></li>
+        <li>Upload it and generate all favicon sizes</li>
+        <li>Replace the generated files in your assets folder</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    function drawFavicon(size) {
+      const canvas = document.getElementById(`favicon${size}`);
+      const ctx = canvas.getContext('2d');
+      
+      // Clear canvas
+      ctx.fillStyle = '#111827';
+      ctx.fillRect(0, 0, size, size);
+      
+      // Draw >_ text
+      ctx.fillStyle = '#10B981';
+      ctx.font = `bold ${size * 0.5}px monospace`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('>_', size / 2, size / 2);
+    }
+
+    function downloadFavicon(size) {
+      const canvas = document.getElementById(`favicon${size}`);
+      const link = document.createElement('a');
+      link.download = size === 48 ? 'favicon.png' : `favicon-${size}x${size}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    // Draw favicons on load
+    window.onload = () => {
+      drawFavicon(32);
+      drawFavicon(48);
+      drawFavicon(180);
+    };
+  </script>
+</body>
+</html>
