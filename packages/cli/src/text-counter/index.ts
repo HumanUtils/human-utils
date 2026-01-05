@@ -9,6 +9,15 @@
  */
 
 import { TextStats } from './types';
+import {
+    countWords,
+    countLines,
+    countSentences,
+    countParagraphs,
+    calculateReadingTime,
+    getWords,
+    stripPunctuation,
+} from '../utils/text';
 
 // Re-export types
 export type { TextStats, TextCounterHistoryEntry } from './types';
@@ -31,26 +40,60 @@ export type { TextStats, TextCounterHistoryEntry } from './types';
  */
 export function countText(input: string): TextStats {
     const characters: number = input.length;
-    let charactersNoSpaces: number = 0;
+    const charactersNoSpaces = countCharactersNoSpaces(input);
+    const words = countWords(input);
+    const lines = countLines(input);
+    const sentences = countSentences(input);
+    const paragraphs = countParagraphs(input);
+    const wordArray = getWords(input);
+    const averageWordLength = calculateAverageWordLength(wordArray);
+    const readingTime = calculateReadingTime(words);
+    
+    return {
+        characters,
+        charactersNoSpaces,
+        words,
+        lines,
+        sentences,
+        paragraphs,
+        averageWordLength,
+        readingTime,
+    };
+}
 
-    for (var i = 0, len = input.length; i < len; i++)
+/**
+ * Counts characters excluding spaces.
+ *
+ * @param input - The text to analyse
+ * @returns Character count without spaces
+ */
+function countCharactersNoSpaces(input: string): number {
+    let charactersNoSpaces = 0;
+    for (let i = 0, len = input.length; i < len; i++)
     {
         if (input[i] !== ' ')
         {
             charactersNoSpaces++;
         }
-    };
+    }
+    return charactersNoSpaces;
+}
 
+/**
+ * Calculates average word length.
+ *
+ * Strips punctuation from words before calculating the average.
+ *
+ * @param words - Array of words to analyse
+ * @returns Average word length
+ */
+function calculateAverageWordLength(words: string[]): number {
+    if (words.length === 0) return 0;
     
-
-    return {
-        characters,
-        charactersNoSpaces,
-        words: 0,
-        lines: 0,
-        sentences: 0,
-        paragraphs: 0,
-        averageWordLength: 0,
-        readingTime: 0,
-    };
+    const totalLength = words.reduce((sum, word) => {
+        const cleanWord = stripPunctuation(word);
+        return sum + cleanWord.length;
+    }, 0);
+    
+    return totalLength / words.length;
 }
