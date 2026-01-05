@@ -1,0 +1,25 @@
+<!-- Full Logo SVG - Horizontal version with ">_ Human Utils" -->
+<svg width="1200" height="300" viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background (optional - remove for transparent) -->
+  <rect width="1200" height="300" fill="#111827"/>
+  
+  <!-- >_ icon -->
+  <text
+    x="100"
+    y="200"
+    font-family="'Share Tech Mono', monospace"
+    font-size="140"
+    fill="#10B981"
+    font-weight="400"
+  >&gt;_</text>
+  
+  <!-- Human Utils text -->
+  <text
+    x="380"
+    y="195"
+    font-family="'Share Tech', sans-serif"
+    font-size="105"
+    fill="#F9FAFB"
+    font-weight="400"
+  >Human Utils</text>
+</svg>

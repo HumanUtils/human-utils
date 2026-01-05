@@ -1,0 +1,16 @@
+<!-- Logo Icon SVG - Square version with just ">_" -->
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background (optional - remove for transparent) -->
+  <rect width="512" height="512" fill="#111827"/>
+  
+  <!-- >_ text centered -->
+  <text
+    x="256"
+    y="320"
+    font-family="'Share Tech Mono', monospace"
+    font-size="240"
+    fill="#10B981"
+    text-anchor="middle"
+    font-weight="400"
+  >&gt;_</text>
+</svg>
