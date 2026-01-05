@@ -6,6 +6,7 @@
  */
 
 import { LoremOptions, LoremResult } from './types';
+import { capitaliseWord, countWords } from '../utils/text';
 
 // Re-export types
 export type { LoremOptions, LoremResult, LoremUnit } from './types';
@@ -147,13 +148,6 @@ function getRandomWord(): string {
 }
 
 /**
- * Capitalizes the first letter of a string
- */
-function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-/**
  * Generates a single sentence (5-15 words)
  */
 function generateSentence(startWithLorem: boolean = false): string {
@@ -168,8 +162,7 @@ function generateSentence(startWithLorem: boolean = false): string {
     words.push(getRandomWord());
   }
 
-  // Capitalize first word and add period
-  words[0] = capitalize(words[0]);
+  words[0] = capitaliseWord(words[0]);
   return words.join(' ') + '.';
 }
 
@@ -217,7 +210,7 @@ export function generateLorem(options: LoremOptions): LoremResult {
 
       text = words.slice(0, count).join(' ');
       if (startWithLorem) {
-        text = capitalize(text);
+        text = capitaliseWord(text);
       }
       paragraphCount = 1;
       break;
@@ -249,8 +242,7 @@ export function generateLorem(options: LoremOptions): LoremResult {
     }
   }
 
-  // Calculate statistics
-  const wordCount = text.split(/\s+/).filter((w) => w.length > 0).length;
+  const wordCount = countWords(text);
   const charCount = text.length;
 
   return {

@@ -9,6 +9,7 @@
  */
 
 import { Base64Result, Base64Operation, Base64Options } from './types';
+import { isNodeEnvironment } from '../utils/crypto';
 
 // Re-export types
 export type { Base64Result, Base64Operation, Base64Options, Base64HistoryEntry } from './types';
@@ -37,8 +38,7 @@ export const encodeToBase64 = (text: string, options?: Base64Options): string =>
   try {
     let encoded: string;
 
-    if (typeof process !== 'undefined' && process.versions?.node) {
-      // Node.js
+    if (isNodeEnvironment()) {
       encoded = Buffer.from(text, 'utf-8').toString('base64');
     } else {
       // React Native/Browser
@@ -84,14 +84,11 @@ export const decodeFromBase64 = (base64Text: string): string => {
     // Convert URL-safe Base64 to standard Base64
     let standardBase64 = base64Text.replace(/-/g, '+').replace(/_/g, '/');
 
-    // Add padding if needed
     while (standardBase64.length % 4 !== 0) {
       standardBase64 += '=';
     }
 
-    // Check if we're in a Node.js environment
-    if (typeof process !== 'undefined' && process.versions?.node) {
-      // Node.js - use Buffer
+    if (isNodeEnvironment()) {
       return Buffer.from(standardBase64, 'base64').toString('utf-8');
     } else {
       // React Native/Browser - use atob

@@ -9,6 +9,7 @@
  */
 
 import { UrlOperation, UrlResult } from './types';
+import { isValidInput } from '../utils/text';
 
 // Re-export types
 export type { UrlOperation, UrlResult, UrlHistoryEntry } from './types';
@@ -28,7 +29,7 @@ export type { UrlOperation, UrlResult, UrlHistoryEntry } from './types';
  * ```
  */
 export function encodeUrl(input: string): UrlResult {
-  if (!input || !input.trim()) {
+  if (!isValidInput(input)) {
     return {
       success: false,
       error: 'Input cannot be empty',
@@ -71,7 +72,7 @@ export function encodeUrl(input: string): UrlResult {
  * ```
  */
 export function decodeUrl(input: string): UrlResult {
-  if (!input || !input.trim()) {
+  if (!isValidInput(input)) {
     return {
       success: false,
       error: 'Input cannot be empty',

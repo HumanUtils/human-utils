@@ -15,6 +15,7 @@ import { uuidCommand } from './commands/commands/uuid';
 import { base64Command } from './commands/commands/base64';
 import { jsonCommand } from './commands/commands/json';
 import { loremCommand } from './commands/commands/lorem';
+import { textCounterCommand } from './commands/commands/text-counter';
 
 const program = new Command();
 
@@ -42,6 +43,7 @@ program.addCommand(uuidCommand);
 program.addCommand(base64Command);
 program.addCommand(jsonCommand);
 program.addCommand(loremCommand);
+program.addCommand(textCounterCommand);
 
 // Parse command line arguments
 program.parse();
