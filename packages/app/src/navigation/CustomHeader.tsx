@@ -1,29 +1,31 @@
 /**
  * Custom Header Component for React Navigation
  *
- * Provides a consistent header with theme toggle across all screens.
- * Automatically shows back button on non-home screens.
+ * Provides a minimal header with back button and Settings icon.
+ * Simple, clean navigation for all screens.
  *
  * @module navigation/CustomHeader
  * @author Lewis Goodwin <https://github.com/is-Lewis>
  */
 
 import React from 'react';
-import { View, Pressable, StyleSheet, Platform } from 'react-native';
-import { Sun, Moon, ArrowLeft } from 'lucide-react-native';
+import { View, Pressable, StyleSheet } from 'react-native';
+import { Settings, ArrowLeft } from 'lucide-react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTheme } from '../theme';
+import { RootStackParamList } from './RootNavigator';
 
 /**
  * Custom header component for navigation screens
  *
- * Shows theme toggle on all screens and back button on non-home screens
+ * Shows back button (except Home) and Settings icon
  */
 export const CustomHeader: React.FC<NativeStackHeaderProps> = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute();
-  const { colors, spacing, theme, toggleTheme } = useTheme();
+  const { colors, spacing } = useTheme();
 
   const isHomeScreen = route.name === 'Home';
 
@@ -35,41 +37,37 @@ export const CustomHeader: React.FC<NativeStackHeaderProps> = () => {
       ]}
     >
       <View style={styles.content}>
-        {/* Back Button (only on non-home screens) */}
-        {!isHomeScreen && (
+        {/* Left Side: Back Button */}
+        <View style={styles.leftSection}>
+          {!isHomeScreen && (
+            <Pressable
+              style={({ hovered }: any) => [
+                styles.iconButton,
+                hovered && { backgroundColor: `${colors.primary}20` },
+              ]}
+              onPress={() => navigation.goBack()}
+              accessibilityLabel="Go back"
+              accessibilityRole="button"
+            >
+              <ArrowLeft size={20} color={colors.text} />
+            </Pressable>
+          )}
+        </View>
+
+        {/* Right Side: Settings Icon */}
+        <View style={styles.rightSection}>
           <Pressable
             style={({ hovered }: any) => [
-              styles.backButton,
+              styles.iconButton,
               hovered && { backgroundColor: `${colors.primary}20` },
             ]}
-            onPress={() => navigation.goBack()}
-            accessibilityLabel="Go back"
+            onPress={() => navigation.navigate('Settings')}
+            accessibilityLabel="Open settings"
             accessibilityRole="button"
           >
-            <ArrowLeft size={24} color={colors.text} />
+            <Settings size={20} color={colors.text} />
           </Pressable>
-        )}
-
-        {/* Spacer to push theme toggle to the right */}
-        {isHomeScreen && <View style={{ flex: 1 }} />}
-
-        {/* Theme Toggle */}
-        <Pressable
-          style={({ hovered }: any) => [
-            styles.themeButton,
-            !isHomeScreen && styles.themeButtonWithBack,
-            hovered && { backgroundColor: `${colors.primary}20` },
-          ]}
-          onPress={toggleTheme}
-          accessibilityLabel={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-          accessibilityRole="button"
-        >
-          {theme === 'light' ? (
-            <Moon size={24} color={colors.text} />
-          ) : (
-            <Sun size={24} color={colors.text} />
-          )}
-        </Pressable>
+        </View>
       </View>
     </View>
   );
@@ -84,18 +82,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  backButton: {
-    padding: 8,
-    marginLeft: -8,
-    borderRadius: 8,
-    alignSelf: 'flex-start',
+  leftSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
-  themeButton: {
-    padding: 8,
-    marginRight: -8,
-    borderRadius: 8,
+  rightSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
-  themeButtonWithBack: {
-    marginLeft: 'auto',
+  iconButton: {
+    padding: 8,
+    borderRadius: 8,
   },
 });
