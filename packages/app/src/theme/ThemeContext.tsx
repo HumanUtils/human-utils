@@ -1,28 +1,40 @@
-import React, { createContext, useContext, useState } from 'react';
+/**
+ * Theme Context
+ *
+ * Provides theme management with light and dark mode support.
+ * Automatically detects system colour scheme on initialisation.
+ *
+ * @module theme/ThemeContext
+ * @author Lewis Goodwin <https://github.com/is-Lewis>
+ */
+
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useColorScheme } from 'react-native';
-import { colors } from './colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getColors, AccentPreset } from './colors';
 import { spacing } from './spacing';
 
 /**
- * Supported theme modes
+ * Supported theme modes.
  */
 export type Theme = 'light' | 'dark';
 
 /**
- * Interface for the Theme Context
- * Provides current theme state, toggle function, and dynamic colors
+ * Theme context type.
+ *
+ * Provides current theme state, accent colour selection, and dynamic colours.
  */
 export interface ThemeContextType {
   /** Current active theme mode */
   theme: Theme;
-  /** Function to toggle between light and dark modes */
+  /** Toggles between light and dark modes */
   toggleTheme: () => void;
-  /**
-   * Dynamic color palette based on current theme.
-   * Includes base colors plus semantic colors (background, surface, text)
-   * that automatically adjust.
-   */
-  colors: typeof colors & {
+  /** Current accent colour preset */
+  accent: AccentPreset;
+  /** Sets the accent colour preset */
+  setAccent: (accent: AccentPreset) => void;
+  /** Dynamic colour palette based on current theme and accent */
+  colors: ReturnType<typeof getColors> & {
     background: string;
     surface: string;
     text: string;
@@ -35,24 +47,18 @@ export interface ThemeContextType {
   spacing: typeof spacing;
 }
 
-/**
- * Context instance for Theme
- * @internal
- */
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-/**
- * Props for the ThemeProvider component
- */
 interface ThemeProviderProps {
   children: React.ReactNode;
 }
 
 /**
- * Theme Provider Component
+ * Theme Provider Component.
  *
- * Wraps the application to provide theme state and dynamic colors.
- * Automatically detects system color scheme on first load.
+ * Wraps the application to provide theme state and dynamic colours.
+ * Detects system colour scheme on initial load.
+ * Persists theme and accent preferences to AsyncStorage.
  *
  * @param props - Component props
  * @returns Provider component
@@ -60,38 +66,89 @@ interface ThemeProviderProps {
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const systemScheme = useColorScheme();
   const [theme, setTheme] = useState<Theme>(systemScheme === 'dark' ? 'dark' : 'light');
+  const [accent, setAccentState] = useState<AccentPreset>('emerald');
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  /**
-   * Toggles the current theme between light and dark
-   */
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  // Load persisted preferences on mount
+  useEffect(() => {
+    const loadPreferences = async () => {
+      try {
+        const [savedTheme, savedAccent] = await Promise.all([
+          AsyncStorage.getItem('theme'),
+          AsyncStorage.getItem('accent'),
+        ]);
+
+        if (savedTheme === 'light' || savedTheme === 'dark') {
+          setTheme(savedTheme);
+        }
+
+        if (savedAccent && ['emerald', 'blue', 'purple', 'pink', 'orange', 'cyan', 'indigo', 'rose'].includes(savedAccent)) {
+          setAccentState(savedAccent as AccentPreset);
+        }
+      } catch (error) {
+        console.warn('Failed to load theme preferences:', error);
+      } finally {
+        setIsLoaded(true);
+      }
+    };
+
+    loadPreferences();
+  }, []);
+
+  const toggleTheme = async () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    try {
+      await AsyncStorage.setItem('theme', newTheme);
+    } catch (error) {
+      console.warn('Failed to save theme preference:', error);
+    }
   };
 
-  // Computed colors based on current theme
+  const setAccent = async (newAccent: AccentPreset) => {
+    setAccentState(newAccent);
+    try {
+      await AsyncStorage.setItem('accent', newAccent);
+    } catch (error) {
+      console.warn('Failed to save accent preference:', error);
+    }
+  };
+
+  const baseColors = getColors(accent);
+
   const themeColors = {
-    ...colors,
-    background: theme === 'light' ? colors.light : colors.dark,
-    surface: theme === 'light' ? colors.lightSurface : colors.darkSurface,
-    text: theme === 'light' ? colors.textOnLight : colors.textOnDark,
-    textMuted: theme === 'light' ? colors.textMutedOnLight : colors.textMutedOnDark,
-    card: theme === 'light' ? colors.lightSurface : colors.darkSurface,
-    border: theme === 'light' ? '#E5E7EB' : '#374151',
-    textSecondary: theme === 'light' ? colors.textMutedOnLight : colors.textMutedOnDark,
+    ...baseColors,
+    background: theme === 'light' ? baseColors.light : baseColors.dark,
+    surface: theme === 'light' ? baseColors.lightSurface : baseColors.darkSurface,
+    text: theme === 'light' ? baseColors.textOnLight : baseColors.textOnDark,
+    textMuted: theme === 'light' ? baseColors.textMutedOnLight : baseColors.textMutedOnDark,
+    card: theme === 'light' ? baseColors.lightSurface : baseColors.darkSurface,
+    border: theme === 'light' ? baseColors.lightBorder : baseColors.darkBorder,
+    textSecondary: theme === 'light' ? baseColors.textMutedOnLight : baseColors.textMutedOnDark,
   };
+
+  // Don't render children until preferences are loaded to avoid flash
+  if (!isLoaded) {
+    return null;
+  }
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, colors: themeColors, spacing }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, accent, setAccent, colors: themeColors, spacing }}>
       {children}
     </ThemeContext.Provider>
   );
 };
 
 /**
- * Hook to access the current theme context
+ * Hook to access the theme context.
  *
- * @returns The current theme context containing theme state and colors
+ * @returns The current theme context
  * @throws Error if used outside of a ThemeProvider
+ *
+ * @example
+ * ```tsx
+ * const { theme, colors, toggleTheme } = useTheme();
+ * ```
  */
 export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
