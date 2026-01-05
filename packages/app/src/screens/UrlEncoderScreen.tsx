@@ -18,8 +18,8 @@ import {
   ScrollView,
   Modal,
 } from 'react-native';
-import { Copy, X, Trash2, Clock, ArrowRightLeft, RefreshCw } from 'lucide-react-native';
-import { Container, InfoButton } from '../components';
+import { Copy, X, Trash2, Clock, ArrowRightLeft, RefreshCw, Link } from 'lucide-react-native';
+import { Container, InfoButton, ToolHeader } from '../components';
 import { useTheme } from '../theme';
 import { useClipboard, useHistory, useDebounce } from '../hooks';
 import { LIMITS } from '../constants/limits';
@@ -163,16 +163,11 @@ export const UrlEncoderScreen: React.FC = () => {
     <Container>
       <ScrollView style={{ flex: 1 }}>
         <View style={{ padding: spacing.l }}>
-          {/* Header */}
-          <View style={styles.header}>
-            <View style={styles.headerLeft}>
-              <Text style={[styles.title, { color: colors.text }]}>URL Encoder</Text>
-              <InfoButton onPress={() => setShowInfoPopup(true)} />
-            </View>
-            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-              Encode or decode URLs and components
-            </Text>
-          </View>
+          <ToolHeader
+            icon={Link}
+            title="URL Encoder/Decoder"
+            description="Encode or decode URLs and URL components"
+          />
 
           {/* History Button */}
           {history.length > 0 && (

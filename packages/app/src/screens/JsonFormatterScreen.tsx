@@ -34,8 +34,9 @@ import {
   AlertTriangle,
   Download,
   Settings,
+  Braces,
 } from 'lucide-react-native';
-import { Container, InfoButton } from '../components';
+import { Container, InfoButton, ToolHeader } from '../components';
 import { useTheme } from '../theme';
 import {
   JsonHistoryEntry,
@@ -282,16 +283,11 @@ export const JsonFormatterScreen: React.FC = () => {
     <Container>
       <ScrollView style={{ flex: 1 }}>
         <View style={{ padding: spacing.l }}>
-          {/* Header */}
-          <View style={styles.header}>
-            <View style={styles.headerLeft}>
-              <Text style={[styles.title, { color: colors.text }]}>JSON Formatter</Text>
-              <InfoButton onPress={() => setShowInfoPopup(true)} />
-            </View>
-            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-              Format, validate & minify JSON
-            </Text>
-          </View>
+          <ToolHeader
+            icon={Braces}
+            title="JSON Formatter & Validator"
+            description="Format, minify, and validate JSON with error detection"
+          />
 
           {/* Validation Status */}
           {inputText && validation && (

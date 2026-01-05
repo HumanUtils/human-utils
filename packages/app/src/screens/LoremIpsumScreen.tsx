@@ -16,7 +16,7 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import { Copy, Info, X, RefreshCw, Type, FileText, List } from 'lucide-react-native';
-import { Container, InfoButton } from '../components';
+import { Container, InfoButton, ToolHeader } from '../components';
 import { useTheme } from '../theme';
 import { LoremUnit, LOREM_INFO, generateLorem } from '@human-utils/cli';
 import { useClipboard } from '../hooks';
@@ -93,16 +93,11 @@ export const LoremIpsumScreen: React.FC = () => {
     <Container>
       <ScrollView style={{ flex: 1 }}>
         <View style={{ padding: spacing.l }}>
-          {/* Header */}
-          <View style={styles.header}>
-            <View style={styles.headerLeft}>
-              <Text style={[styles.title, { color: colors.text }]}>Lorem Ipsum Generator</Text>
-              <InfoButton onPress={() => setShowInfoPopup(true)} />
-            </View>
-            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-              Generate placeholder text for designs
-            </Text>
-          </View>
+          <ToolHeader
+            icon={FileText}
+            title="Lorem Ipsum Generator"
+            description="Generate placeholder text for design mockups"
+          />
 
           {/* Unit Selection */}
           <View style={styles.section}>

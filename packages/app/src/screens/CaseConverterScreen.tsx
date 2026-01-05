@@ -21,8 +21,8 @@ import {
   Modal,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { Copy, X, Trash2, Clock, ArrowRightLeft, RefreshCw, ArrowDown } from 'lucide-react-native';
-import { Container, InfoButton } from '../components';
+import { Copy, X, Trash2, Clock, ArrowRightLeft, RefreshCw, ArrowDown, CaseSensitive } from 'lucide-react-native';
+import { Container, InfoButton, ToolHeader } from '../components';
 import { useTheme } from '../theme';
 import { useClipboard, useHistory, useDebounce } from '../hooks';
 import { LIMITS } from '../constants/limits';
@@ -198,16 +198,11 @@ export const CaseConverterScreen: React.FC = () => {
     <Container>
       <ScrollView style={{ flex: 1 }}>
         <View style={{ padding: spacing.l }}>
-          {/* Header */}
-          <View style={styles.header}>
-            <View style={styles.headerLeft}>
-              <Text style={[styles.title, { color: colors.text }]}>Case Converter</Text>
-              <InfoButton onPress={() => setShowInfoPopup(true)} />
-            </View>
-            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-              Transform text between case formats
-            </Text>
-          </View>
+          <ToolHeader
+            icon={CaseSensitive}
+            title="Case Converter"
+            description="Convert text between camelCase, snake_case, kebab-case, and more"
+          />
 
           {/* Visual Flow Indicator */}
           {detectedCase && (

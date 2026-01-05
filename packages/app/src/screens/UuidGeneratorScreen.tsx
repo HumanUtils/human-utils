@@ -27,8 +27,9 @@ import {
   Clock,
   CheckCircle,
   XCircle,
+  Hash,
 } from 'lucide-react-native';
-import { Container, InfoButton, InfoPopup } from '../components';
+import { Container, InfoButton, InfoPopup, ToolHeader } from '../components';
 import { useTheme } from '../theme';
 import {
   UUIDVersion,
@@ -181,13 +182,11 @@ export const UuidGeneratorScreen: React.FC = () => {
     <Container>
       <ScrollView style={{ flex: 1 }}>
         <View style={{ padding: spacing.l }}>
-          {/* Header */}
-          <View style={styles.header}>
-            <Text style={[styles.title, { color: colors.text }]}>UUID Generator</Text>
-            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-              Generate universally unique identifiers
-            </Text>
-          </View>
+          <ToolHeader
+            icon={Hash}
+            title="UUID Generator & Validator"
+            description="Generate universally unique identifiers (v1, v4, v5, v7)"
+          />
 
           {/* Help Me Choose Section */}
           <TouchableOpacity

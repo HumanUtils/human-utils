@@ -10,6 +10,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
+import { FileBarChart } from 'lucide-react-native';
 import { countText, TextStats } from '@human-utils/cli';
 import { useTheme } from '../theme/ThemeContext';
 import { Container } from '../components/Container';
@@ -21,6 +22,7 @@ import { ToolHeader } from '../components/ToolHeader';
 export default function TextCounterScreen() {
   const { colors } = useTheme();
   const [text, setText] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
 
   const stats = useMemo(() => countText(text), [text]);
 
@@ -39,30 +41,41 @@ export default function TextCounterScreen() {
     },
     textInput: {
       borderWidth: 1,
-      borderColor: colors.border,
-      borderRadius: 8,
-      padding: 12,
+      borderColor: isFocused ? colors.primary : colors.border,
+      borderRadius: 12,
+      padding: 16,
       fontSize: 16,
       color: colors.text,
       backgroundColor: colors.card,
       minHeight: 150,
       textAlignVertical: 'top',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 2,
+      outlineStyle: 'none' as any,
     },
     statsContainer: {
-      gap: 12,
+      gap: 16,
     },
     statCard: {
       backgroundColor: colors.card,
-      borderRadius: 8,
-      padding: 16,
+      borderRadius: 12,
+      padding: 20,
       borderWidth: 1,
       borderColor: colors.border,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 2,
     },
     statRow: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingVertical: 8,
+      paddingVertical: 12,
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
     },
@@ -70,13 +83,14 @@ export default function TextCounterScreen() {
       borderBottomWidth: 0,
     },
     statLabel: {
-      fontSize: 14,
+      fontSize: 15,
       color: colors.textSecondary,
+      fontWeight: '500',
     },
     statValue: {
-      fontSize: 16,
-      fontWeight: '600',
-      color: colors.text,
+      fontSize: 18,
+      fontWeight: '700',
+      color: colors.primary,
     },
   });
 
@@ -90,8 +104,9 @@ export default function TextCounterScreen() {
   return (
     <Container>
       <ToolHeader
+        icon={FileBarChart}
         title="Text Counter"
-        subtitle="Count characters, words, lines, sentences, and paragraphs"
+        description="Count characters, words, lines, sentences, and paragraphs"
       />
 
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -101,6 +116,8 @@ export default function TextCounterScreen() {
             style={styles.textInput}
             value={text}
             onChangeText={setText}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             placeholder="Type or paste your text here..."
             placeholderTextColor={colors.textSecondary}
             multiline

@@ -37,8 +37,9 @@ import {
   FileText,
   Download,
   Share2,
+  Binary,
 } from 'lucide-react-native';
-import { Container, InfoButton } from '../components';
+import { Container, InfoButton, ToolHeader } from '../components';
 import { useTheme } from '../theme';
 import {
   Base64Operation,
@@ -297,16 +298,11 @@ export const Base64EncoderScreen: React.FC = () => {
     <Container>
       <ScrollView style={{ flex: 1 }}>
         <View style={{ padding: spacing.l }}>
-          {/* Header */}
-          <View style={styles.header}>
-            <View style={styles.headerLeft}>
-              <Text style={[styles.title, { color: colors.text }]}>Base64 Encoder/Decoder</Text>
-              <InfoButton onPress={() => setShowInfoPopup(true)} />
-            </View>
-            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-              Advanced encoding with smart features
-            </Text>
-          </View>
+          <ToolHeader
+            icon={Binary}
+            title="Base64 Encoder/Decoder"
+            description="Encode and decode text using Base64 encoding"
+          />
 
           {/* Auto-detection warning (Feature 3) */}
           {isLikelyBase64 && operation === 'encode' && (

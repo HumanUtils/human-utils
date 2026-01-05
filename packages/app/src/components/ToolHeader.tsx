@@ -1,67 +1,48 @@
 /**
  * ToolHeader Component
  *
- * A reusable header for tool screens with back navigation and theme toggle.
- * Provides consistent navigation and theme switching across all tool screens.
+ * Displays tool icon, name, and description at the top of tool screens.
+ * Provides visual context for the current tool.
  *
  * @module components/ToolHeader
  * @author Lewis Goodwin <https://github.com/is-Lewis>
  */
 
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { ArrowLeft, Sun, Moon } from 'lucide-react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useTheme } from '../theme';
+import { View, Text, StyleSheet } from 'react-native';
+import { LucideIcon } from 'lucide-react-native';
+import { useTheme, typography } from '../theme';
 
 interface ToolHeaderProps {
+  icon: LucideIcon;
   title: string;
-  subtitle?: string;
+  description: string;
 }
 
 /**
- * Header component for tool screens with navigation and theme toggle
+ * Header component for tool screens with icon, title, and description
  *
- * @param {string} title - The main title of the tool
- * @param {string} subtitle - Optional subtitle/description
+ * @param {LucideIcon} icon - The icon component for the tool
+ * @param {string} title - The name of the tool
+ * @param {string} description - Brief description of the tool's purpose
  *
  * @example
- * <ToolHeader title="UUID Generator" subtitle="Generate universally unique identifiers" />
+ * <ToolHeader 
+ *   icon={Hash} 
+ *   title="UUID Generator" 
+ *   description="Generate universally unique identifiers" 
+ * />
  */
-export const ToolHeader: React.FC<ToolHeaderProps> = ({ title, subtitle }) => {
-  const navigation = useNavigation();
-  const { colors, spacing, theme, toggleTheme } = useTheme();
+export const ToolHeader: React.FC<ToolHeaderProps> = ({ icon: Icon, title, description }) => {
+  const { colors, spacing } = useTheme();
 
   return (
-    <View style={[styles.container, { marginBottom: spacing.l }]}>
-      <View style={styles.topRow}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-          accessibilityLabel="Go back"
-          accessibilityRole="button"
-        >
-          <ArrowLeft size={24} color={colors.text} />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.themeButton}
-          onPress={toggleTheme}
-          accessibilityLabel={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-          accessibilityRole="button"
-        >
-          {theme === 'light' ? (
-            <Moon size={24} color={colors.text} />
-          ) : (
-            <Sun size={24} color={colors.text} />
-          )}
-        </TouchableOpacity>
+    <View style={[styles.container, { marginBottom: spacing.xl }]}>
+      <View style={[styles.iconContainer, { backgroundColor: `${colors.primary}15` }]}>
+        <Icon size={32} color={colors.primary} />
       </View>
-
       <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
-      {subtitle && (
-        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>{subtitle}</Text>
-      )}
+      <Text style={[styles.description, { color: colors.textMuted }]}>{description}</Text>
     </View>
   );
 };
@@ -69,27 +50,26 @@ export const ToolHeader: React.FC<ToolHeaderProps> = ({ title, subtitle }) => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+    alignItems: 'center',
   },
-  topRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  iconContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: 16,
+    justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
   },
-  backButton: {
-    padding: 8,
-    marginLeft: -8,
-  },
-  themeButton: {
-    padding: 8,
-    marginRight: -8,
-  },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 4,
+    fontSize: 24,
+    fontFamily: typography.heading,
+    marginBottom: 8,
+    textAlign: 'center',
   },
-  subtitle: {
+  description: {
     fontSize: 16,
+    fontFamily: typography.body,
+    textAlign: 'center',
+    lineHeight: 22,
   },
 });

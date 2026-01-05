@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme, typography } from '../theme';
 import { spacing } from '../theme/spacing';
 import { APP_NAME, TOOL_CATEGORIES, TOOLS } from '../constants';
-import { CategoryCard, SearchBar, Container } from '../components';
+import { CategoryCard, SearchBar, Container, LogoIcon } from '../components';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
@@ -15,15 +15,10 @@ export const HomeScreen = () => {
   const { colors } = useTheme();
   const navigation = useNavigation<NavigationProp>();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // Filter and combine results based on search query
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) {
-      // No search - show categories or tools in selected category
-      if (selectedCategory) {
-        return TOOLS.filter((tool) => tool.categories.includes(selectedCategory));
-      }
       return TOOL_CATEGORIES;
     }
 
@@ -45,16 +40,22 @@ export const HomeScreen = () => {
 
     // Return tools first, then categories
     return [...matchedTools, ...matchedCategories];
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery]);
 
   const isSearching = searchQuery.trim().length > 0;
 
-  const handleCategoryPress = (categoryId: string) => {
-    setSelectedCategory(selectedCategory === categoryId ? null : categoryId);
+  const handleCategoryPress = (categoryId: string, categoryName: string) => {
+    navigation.navigate('Category', { categoryId, categoryName });
   };
 
-  const handleToolPress = (route: keyof RootStackParamList) => {
+  const handleToolPress = (route: Exclude<keyof RootStackParamList, 'Category'>) => {
+    // @ts-ignore - route is guaranteed to not be 'Category'
     navigation.navigate(route);
+  };
+
+  const handleLogoPress = () => {
+    setSearchQuery('');
+    navigation.navigate('Home');
   };
 
   return (
@@ -71,20 +72,18 @@ export const HomeScreen = () => {
             <View style={styles.headerContainer}>
               {/* Centered Hero Section */}
               <View style={styles.hero}>
+                <TouchableOpacity onPress={handleLogoPress} accessibilityLabel="Go to home" accessibilityRole="button">
+                  <LogoIcon size={160} color={colors.primary} />
+                </TouchableOpacity>
                 <Text
-                  style={[styles.logoIcon, { color: colors.primary, fontFamily: typography.code }]}
-                >
-                  &gt;_
-                </Text>
-                <Text
-                  style={[styles.title, { color: colors.text, fontFamily: typography.primary }]}
+                  style={[styles.title, { color: colors.text, fontFamily: typography.heading }]}
                 >
                   {APP_NAME}
                 </Text>
                 <Text
                   style={[
                     styles.subtitle,
-                    { color: colors.textMuted, fontFamily: typography.primary },
+                    { color: colors.textMuted, fontFamily: typography.body },
                   ]}
                 >
                   Trustworthy. Useful. Honest.
@@ -97,20 +96,6 @@ export const HomeScreen = () => {
                 placeholder="Search tools or categories..."
                 style={styles.searchBar}
               />
-
-              {/* Back to Categories Button */}
-              {selectedCategory && !isSearching && (
-                <TouchableOpacity
-                  style={styles.backButton}
-                  onPress={() => setSelectedCategory(null)}
-                  accessibilityLabel="Back to categories"
-                  accessibilityRole="button"
-                >
-                  <Text style={[styles.backText, { color: colors.primary }]}>
-                    ← Back to Categories
-                  </Text>
-                </TouchableOpacity>
-              )}
 
               {/* Search Results Header */}
               {isSearching && searchResults.length > 0 && (
@@ -136,7 +121,7 @@ export const HomeScreen = () => {
                 <CategoryCard
                   title={item.title}
                   icon={item.icon}
-                  onPress={() => handleToolPress(item.route as keyof RootStackParamList)}
+                  onPress={() => handleToolPress(item.route as Exclude<keyof RootStackParamList, 'Category'>)}
                   style={styles.card}
                 />
               );
@@ -146,7 +131,7 @@ export const HomeScreen = () => {
                 <CategoryCard
                   title={item.title}
                   icon={item.icon}
-                  onPress={() => handleCategoryPress(item.id)}
+                  onPress={() => handleCategoryPress(item.id, item.title)}
                   style={styles.card}
                 />
               );
@@ -172,15 +157,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing.l,
   },
-  logoIcon: {
-    fontSize: 64,
-    marginBottom: spacing.s,
-    fontWeight: 'bold',
-  },
   title: {
     fontSize: 32,
     textAlign: 'center',
     marginBottom: spacing.xs,
+    marginTop: spacing.m,
   },
   subtitle: {
     fontSize: 18,
@@ -189,14 +170,6 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     marginTop: spacing.m,
-  },
-  backButton: {
-    marginTop: spacing.m,
-    paddingVertical: spacing.s,
-  },
-  backText: {
-    fontSize: 16,
-    fontWeight: '600',
   },
   resultsHeader: {
     marginTop: spacing.m,
