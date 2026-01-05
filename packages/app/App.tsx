@@ -2,6 +2,13 @@ import { StatusBar } from 'expo-status-bar';
 import { ThemeProvider } from './src/theme';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { useFonts, ShareTechMono_400Regular } from '@expo-google-fonts/share-tech-mono';
+import { ShareTech_400Regular } from '@expo-google-fonts/share-tech';
+import {
+  Overpass_400Regular,
+  Overpass_500Medium,
+  Overpass_600SemiBold,
+  Overpass_700Bold,
+} from '@expo-google-fonts/overpass';
 import { ActivityIndicator, View } from 'react-native';
 import { Logger } from './src/services/Logger';
 import { useEffect } from 'react';
@@ -37,6 +44,11 @@ export default Sentry.wrap(function App() {
 
   const [fontsLoaded] = useFonts({
     ShareTechMono_400Regular,
+    ShareTech_400Regular,
+    Overpass_400Regular,
+    Overpass_500Medium,
+    Overpass_600SemiBold,
+    Overpass_700Bold,
   });
 
   if (!fontsLoaded) {
