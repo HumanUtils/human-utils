@@ -18,7 +18,8 @@
     "lint": "eslint packages --ext .ts,.tsx",
     "lint:fix": "eslint packages --ext .ts,.tsx --fix",
     "format": "prettier --write \"packages/**/*.{ts,tsx,json}\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "deploy:web": "npm ci && npm -w packages/cli run build && npm -w packages/app exec -- npx expo export --platform web"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.1",
