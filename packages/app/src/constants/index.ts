@@ -15,6 +15,7 @@ import {
   CaseSensitive,
   Link,
   FileBarChart,
+  Receipt,
 } from 'lucide-react-native';
 
 export const TOOL_CATEGORIES = [
@@ -84,5 +85,13 @@ export const TOOLS = [
     categories: ['text'],
     icon: FileBarChart,
     route: 'TextCounter' as const,
+  },
+  {
+    id: 'tax-calculator',
+    title: 'Self-Employed Tax Calculator',
+    description: 'Calculate UK self-employed tax, NI, and take-home pay',
+    categories: ['math'],
+    icon: Receipt,
+    route: 'TaxCalculator' as const,
   },
 ];

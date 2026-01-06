@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTheme } from '../theme';
-import { HomeScreen, UuidGeneratorScreen, SettingsScreen } from '../screens';
+import { HomeScreen, UuidGeneratorScreen, SettingsScreen, TaxCalculatorScreen } from '../screens';
 import { CategoryScreen } from '../screens/CategoryScreen';
 import { Base64EncoderScreen } from '../screens/Base64EncoderScreen';
 import { JsonFormatterScreen } from '../screens/JsonFormatterScreen';
@@ -23,6 +23,7 @@ export type RootStackParamList = {
   CaseConverter: undefined;
   UrlEncoder: undefined;
   TextCounter: undefined;
+  TaxCalculator: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -77,6 +78,7 @@ export const RootNavigator = () => {
         <Stack.Screen name="CaseConverter" component={CaseConverterScreen} options={{ title: 'Case Converter - Human Utils' }} />
         <Stack.Screen name="UrlEncoder" component={UrlEncoderScreen} options={{ title: 'URL Encoder - Human Utils' }} />
         <Stack.Screen name="TextCounter" component={TextCounterScreen} options={{ title: 'Text Counter - Human Utils' }} />
+        <Stack.Screen name="TaxCalculator" component={TaxCalculatorScreen} options={{ title: 'Self-Employed Tax Calculator - Human Utils' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

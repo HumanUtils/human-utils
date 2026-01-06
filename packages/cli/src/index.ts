@@ -38,3 +38,7 @@ export * from './url-encoder/metadata';
 // Text Counter - re-export everything from the tool
 export * from './text-counter';
 export * from './text-counter/metadata';
+
+// Tax Calculator - re-export everything from the tool
+export * from './tax-calculator';
+export * from './tax-calculator/metadata';
