@@ -15,6 +15,9 @@ import { useTheme } from '../theme/ThemeContext';
 import { typography } from '../theme/typography';
 import { Container } from '../components/Container';
 import { AccentPicker } from '../components/AccentPicker';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../navigation/RootNavigator';
 
 /**
  * Settings Screen Component.
@@ -29,6 +32,7 @@ import { AccentPicker } from '../components/AccentPicker';
  */
 export const SettingsScreen: React.FC = () => {
   const { theme, toggleTheme, colors, spacing } = useTheme();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
     <Container>
@@ -91,6 +95,75 @@ export const SettingsScreen: React.FC = () => {
           >
             <AccentPicker />
           </View>
+        </View>
+
+        {/* Development Section */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Development</Text>
+          <TouchableOpacity
+            style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}
+            onPress={() => navigation.navigate('TypographyDemo')}
+          >
+            <View style={styles.cardContent}>
+              <View style={styles.cardLeft}>
+                <Palette size={24} color={colors.primary} />
+                <View style={styles.cardText}>
+                  <Text style={[styles.cardTitle, { color: colors.text }]}>Typography Demo</Text>
+                  <Text style={[styles.cardDescription, { color: colors.textMuted }]}>
+                    View all typography components
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}
+            onPress={() => navigation.navigate('ButtonDemo')}
+          >
+            <View style={styles.cardContent}>
+              <View style={styles.cardLeft}>
+                <Palette size={24} color={colors.primary} />
+                <View style={styles.cardText}>
+                  <Text style={[styles.cardTitle, { color: colors.text }]}>Button Demo</Text>
+                  <Text style={[styles.cardDescription, { color: colors.textMuted }]}>
+                    View all button components
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}
+            onPress={() => navigation.navigate('FormDemo')}
+          >
+            <View style={styles.cardContent}>
+              <View style={styles.cardLeft}>
+                <Palette size={24} color={colors.primary} />
+                <View style={styles.cardText}>
+                  <Text style={[styles.cardTitle, { color: colors.text }]}>Form Demo</Text>
+                  <Text style={[styles.cardDescription, { color: colors.textMuted }]}>
+                    Form validation with react-hook-form
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}
+            onPress={() => navigation.navigate('InputDemo')}
+          >
+            <View style={styles.cardContent}>
+              <View style={styles.cardLeft}>
+                <Palette size={24} color={colors.primary} />
+                <View style={styles.cardText}>
+                  <Text style={[styles.cardTitle, { color: colors.text }]}>Input Demo</Text>
+                  <Text style={[styles.cardDescription, { color: colors.textMuted }]}>
+                    View all input components
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.footer}>

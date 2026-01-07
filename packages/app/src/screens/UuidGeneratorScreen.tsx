@@ -16,7 +16,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  ScrollView,
 } from 'react-native';
 import {
   ChevronDown,
@@ -29,7 +28,13 @@ import {
   XCircle,
   Hash,
 } from 'lucide-react-native';
-import { Container, InfoButton, InfoPopup, ToolHeader } from '../components';
+import {
+  Container,
+  InfoButton,
+  InfoPopup,
+  ListItem,
+  ToolHeader,
+} from '../components';
 import { useTheme } from '../theme';
 import {
   UUIDVersion,
@@ -180,8 +185,7 @@ export const UuidGeneratorScreen: React.FC = () => {
 
   return (
     <Container>
-      <ScrollView style={{ flex: 1 }}>
-        <View style={{ padding: spacing.l }}>
+      <View style={{ padding: spacing.l }}>
           <ToolHeader
             icon={Hash}
             title="UUID Generator & Validator"
@@ -396,28 +400,16 @@ export const UuidGeneratorScreen: React.FC = () => {
               {generatedUUIDs.map((uuid, index) => {
                 const isValid = isValidUUID(uuid);
                 return (
-                  <TouchableOpacity
+                  <ListItem
                     key={index}
-                    style={[
-                      styles.uuidItem,
-                      { backgroundColor: colors.card, borderColor: colors.border },
-                    ]}
+                    title={uuid}
+                    subtitle="Tap to copy"
+                    mono
+                    rightContent={
+                      isValid && <CheckCircle size={20} color="#10B981" />
+                    }
                     onPress={() => handleCopySingle(uuid)}
-                    accessibilityLabel={`UUID ${index + 1}, ${uuid}, tap to copy`}
-                    accessibilityRole="button"
-                  >
-                    <View style={styles.uuidContent}>
-                      <View style={styles.uuidTextContainer}>
-                        <Text style={[styles.uuidText, { color: colors.text }]}>{uuid}</Text>
-                        <Text style={[styles.tapToCopy, { color: colors.textSecondary }]}>
-                          Tap to copy
-                        </Text>
-                      </View>
-                      {isValid && (
-                        <CheckCircle size={20} color="#10B981" style={styles.validIcon} />
-                      )}
-                    </View>
-                  </TouchableOpacity>
+                  />
                 );
               })}
             </View>
@@ -513,15 +505,14 @@ export const UuidGeneratorScreen: React.FC = () => {
               )}
             </View>
           </View>
-        </View>
-      </ScrollView>
 
-      {/* Info Popup */}
-      <InfoPopup
-        visible={showInfoPopup}
-        onClose={() => setShowInfoPopup(false)}
-        metadata={infoMetadata}
-      />
+        {/* Info Popup */}
+        <InfoPopup
+          visible={showInfoPopup}
+          onClose={() => setShowInfoPopup(false)}
+          metadata={infoMetadata}
+        />
+      </View>
     </Container>
   );
 };
@@ -716,31 +707,6 @@ const styles = StyleSheet.create({
   copyAllButton: {
     fontSize: 15,
     fontWeight: '600',
-  },
-  uuidItem: {
-    padding: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    marginBottom: 8,
-  },
-  uuidContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  uuidTextContainer: {
-    flex: 1,
-  },
-  uuidText: {
-    fontSize: 14,
-    fontFamily: 'monospace',
-    marginBottom: 4,
-  },
-  tapToCopy: {
-    fontSize: 12,
-  },
-  validIcon: {
-    marginLeft: 8,
   },
   validateSection: {
     padding: 16,

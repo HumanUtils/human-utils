@@ -9,11 +9,11 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, TextInput, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme, typography } from '../theme';
 import { spacing } from '../theme/spacing';
-import { Container, ToolHeader } from '../components';
+import { Card, Chip, Container, Divider, Input, ListItem, ToolHeader } from '../components';
 import { Receipt } from 'lucide-react-native';
 import { calculateTax, TaxInputs, TaxSchema } from '@human-utils/cli';
 
@@ -91,7 +91,6 @@ export const TaxCalculatorScreen = () => {
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
       <Container>
-        <ScrollView showsVerticalScrollIndicator={false}>
           <ToolHeader
             icon={Receipt}
             title="Self-Employed Tax Calculator"
@@ -104,62 +103,35 @@ export const TaxCalculatorScreen = () => {
               Income & Expenses ({ukSchema.taxYear})
             </Text>
 
-            <View style={styles.inputContainer}>
-              <Text style={[styles.label, { color: colors.text, fontFamily: typography.body }]}>
-                Gross Income (Annual)
-              </Text>
-              <View style={[styles.inputWrapper, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-                <Text style={[styles.currency, { color: colors.textMuted, fontFamily: typography.mono }]}>
-                  {ukSchema.currencySymbol}
-                </Text>
-                <TextInput
-                  style={[styles.input, { color: colors.text, fontFamily: typography.mono }]}
-                  value={income}
-                  onChangeText={setIncome}
-                  placeholder="50000"
-                  placeholderTextColor={colors.textMuted}
-                  keyboardType="numeric"
-                />
-              </View>
-            </View>
+            <Input
+              label="Gross Income (Annual)"
+              prefix={ukSchema.currencySymbol}
+              value={income}
+              onChangeText={setIncome}
+              placeholder="50000"
+              keyboardType="decimal-pad"
+              mono
+            />
 
-            <View style={styles.inputContainer}>
-              <Text style={[styles.label, { color: colors.text, fontFamily: typography.body }]}>
-                Business Expenses (Annual)
-              </Text>
-              <View style={[styles.inputWrapper, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-                <Text style={[styles.currency, { color: colors.textMuted, fontFamily: typography.mono }]}>
-                  {ukSchema.currencySymbol}
-                </Text>
-                <TextInput
-                  style={[styles.input, { color: colors.text, fontFamily: typography.mono }]}
-                  value={expenses}
-                  onChangeText={setExpenses}
-                  placeholder="5000"
-                  placeholderTextColor={colors.textMuted}
-                  keyboardType="numeric"
-                />
-              </View>
-            </View>
+            <Input
+              label="Business Expenses (Annual)"
+              prefix={ukSchema.currencySymbol}
+              value={expenses}
+              onChangeText={setExpenses}
+              placeholder="5000"
+              keyboardType="decimal-pad"
+              mono
+            />
 
-            <View style={styles.inputContainer}>
-              <Text style={[styles.label, { color: colors.text, fontFamily: typography.body }]}>
-                Pension Contributions (Optional)
-              </Text>
-              <View style={[styles.inputWrapper, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-                <Text style={[styles.currency, { color: colors.textMuted, fontFamily: typography.mono }]}>
-                  {ukSchema.currencySymbol}
-                </Text>
-                <TextInput
-                  style={[styles.input, { color: colors.text, fontFamily: typography.mono }]}
-                  value={pension}
-                  onChangeText={setPension}
-                  placeholder="0"
-                  placeholderTextColor={colors.textMuted}
-                  keyboardType="numeric"
-                />
-              </View>
-            </View>
+            <Input
+              label="Pension Contributions (Optional)"
+              prefix={ukSchema.currencySymbol}
+              value={pension}
+              onChangeText={setPension}
+              placeholder="0"
+              keyboardType="decimal-pad"
+              mono
+            />
 
             <View style={styles.inputContainer}>
               <Text style={[styles.label, { color: colors.text, fontFamily: typography.body }]}>
@@ -167,25 +139,13 @@ export const TaxCalculatorScreen = () => {
               </Text>
               <View style={styles.planSelector}>
                 {STUDENT_LOAN_PLANS.map((plan) => (
-                  <TouchableOpacity
+                  <Chip
                     key={plan.label}
-                    style={[
-                      styles.planButton,
-                      { backgroundColor: colors.surface, borderColor: colors.border },
-                      studentLoanPlan === plan.value && { borderColor: colors.primary, backgroundColor: `${colors.primary}20` },
-                    ]}
+                    label={plan.label}
+                    selected={studentLoanPlan === plan.value}
                     onPress={() => setStudentLoanPlan(plan.value)}
-                  >
-                    <Text
-                      style={[
-                        styles.planButtonText,
-                        { color: colors.text, fontFamily: typography.body },
-                        studentLoanPlan === plan.value && { color: colors.primary },
-                      ]}
-                    >
-                      {plan.label}
-                    </Text>
-                  </TouchableOpacity>
+                    size="small"
+                  />
                 ))}
               </View>
             </View>
@@ -198,96 +158,105 @@ export const TaxCalculatorScreen = () => {
                 Tax Breakdown
               </Text>
 
-              <View style={[styles.resultCard, { backgroundColor: colors.surface }]}>
-                <View style={styles.resultRow}>
-                  <Text style={[styles.resultLabel, { color: colors.textMuted, fontFamily: typography.body }]}>
-                    Taxable Profit
-                  </Text>
-                  <Text style={[styles.resultValue, { color: colors.text, fontFamily: typography.mono }]}>
-                    {formatCurrency(calculations.profit)}
-                  </Text>
-                </View>
+              <Card>
+                <ListItem
+                  title="Taxable Profit"
+                  titleStyle={{ color: colors.textMuted, fontFamily: typography.body, fontSize: 14 }}
+                  rightContent={
+                    <Text style={{ color: colors.text, fontFamily: typography.mono, fontSize: 16 }}>
+                      {formatCurrency(calculations.profit)}
+                    </Text>
+                  }
+                />
 
                 {calculations.adjustedProfit !== calculations.profit && (
-                  <View style={styles.resultRow}>
-                    <Text style={[styles.resultLabel, { color: colors.textMuted, fontFamily: typography.body }]}>
-                      After Pension Contributions
-                    </Text>
-                    <Text style={[styles.resultValue, { color: colors.text, fontFamily: typography.mono }]}>
-                      {formatCurrency(calculations.adjustedProfit)}
-                    </Text>
-                  </View>
+                  <ListItem
+                    title="After Pension Contributions"
+                    titleStyle={{ color: colors.textMuted, fontFamily: typography.body, fontSize: 14 }}
+                    rightContent={
+                      <Text style={{ color: colors.text, fontFamily: typography.mono, fontSize: 16 }}>
+                        {formatCurrency(calculations.adjustedProfit)}
+                      </Text>
+                    }
+                  />
                 )}
 
-                <View style={[styles.divider, { backgroundColor: colors.border }]} />
+                <Divider spacing="s" />
 
-                <View style={styles.resultRow}>
-                  <Text style={[styles.resultLabel, { color: colors.textMuted, fontFamily: typography.body }]}>
-                    Income Tax
-                  </Text>
-                  <Text style={[styles.resultValue, { color: colors.text, fontFamily: typography.mono }]}>
-                    {formatCurrency(calculations.incomeTax)}
-                  </Text>
-                </View>
+                <ListItem
+                  title="Income Tax"
+                  titleStyle={{ color: colors.textMuted, fontFamily: typography.body, fontSize: 14 }}
+                  rightContent={
+                    <Text style={{ color: colors.text, fontFamily: typography.mono, fontSize: 16 }}>
+                      {formatCurrency(calculations.incomeTax)}
+                    </Text>
+                  }
+                />
 
-                <View style={styles.resultRow}>
-                  <Text style={[styles.resultLabel, { color: colors.textMuted, fontFamily: typography.body }]}>
-                    Class 2 NI
-                  </Text>
-                  <Text style={[styles.resultValue, { color: colors.text, fontFamily: typography.mono }]}>
-                    {formatCurrency(calculations.class2NI)}
-                  </Text>
-                </View>
+                <ListItem
+                  title="Class 2 NI"
+                  titleStyle={{ color: colors.textMuted, fontFamily: typography.body, fontSize: 14 }}
+                  rightContent={
+                    <Text style={{ color: colors.text, fontFamily: typography.mono, fontSize: 16 }}>
+                      {formatCurrency(calculations.class2NI)}
+                    </Text>
+                  }
+                />
 
-                <View style={styles.resultRow}>
-                  <Text style={[styles.resultLabel, { color: colors.textMuted, fontFamily: typography.body }]}>
-                    Class 4 NI
-                  </Text>
-                  <Text style={[styles.resultValue, { color: colors.text, fontFamily: typography.mono }]}>
-                    {formatCurrency(calculations.class4NI)}
-                  </Text>
-                </View>
+                <ListItem
+                  title="Class 4 NI"
+                  titleStyle={{ color: colors.textMuted, fontFamily: typography.body, fontSize: 14 }}
+                  rightContent={
+                    <Text style={{ color: colors.text, fontFamily: typography.mono, fontSize: 16 }}>
+                      {formatCurrency(calculations.class4NI)}
+                    </Text>
+                  }
+                />
 
                 {calculations.studentLoan > 0 && (
-                  <View style={styles.resultRow}>
-                    <Text style={[styles.resultLabel, { color: colors.textMuted, fontFamily: typography.body }]}>
-                      Student Loan Repayment
-                    </Text>
-                    <Text style={[styles.resultValue, { color: colors.text, fontFamily: typography.mono }]}>
-                      {formatCurrency(calculations.studentLoan)}
-                    </Text>
-                  </View>
+                  <ListItem
+                    title="Student Loan Repayment"
+                    titleStyle={{ color: colors.textMuted, fontFamily: typography.body, fontSize: 14 }}
+                    rightContent={
+                      <Text style={{ color: colors.text, fontFamily: typography.mono, fontSize: 16 }}>
+                        {formatCurrency(calculations.studentLoan)}
+                      </Text>
+                    }
+                  />
                 )}
 
-                <View style={[styles.divider, { backgroundColor: colors.border }]} />
+                <Divider spacing="s" />
 
-                <View style={styles.resultRow}>
-                  <Text style={[styles.resultLabel, { color: colors.text, fontFamily: typography.bodySemiBold }]}>
-                    Total Tax & NI
-                  </Text>
-                  <Text style={[styles.resultValue, { color: colors.primary, fontFamily: typography.mono }]}>
-                    {formatCurrency(calculations.totalTax)}
-                  </Text>
-                </View>
+                <ListItem
+                  title="Total Tax & NI"
+                  titleStyle={{ color: colors.text, fontFamily: typography.bodySemiBold, fontSize: 14 }}
+                  rightContent={
+                    <Text style={{ color: colors.primary, fontFamily: typography.mono, fontSize: 16 }}>
+                      {formatCurrency(calculations.totalTax)}
+                    </Text>
+                  }
+                />
 
-                <View style={styles.resultRow}>
-                  <Text style={[styles.resultLabel, { color: colors.text, fontFamily: typography.bodySemiBold }]}>
-                    Take-Home Pay
-                  </Text>
-                  <Text style={[styles.resultValueLarge, { color: colors.primary, fontFamily: typography.mono }]}>
-                    {formatCurrency(calculations.takeHome)}
-                  </Text>
-                </View>
+                <ListItem
+                  title="Take-Home Pay"
+                  titleStyle={{ color: colors.text, fontFamily: typography.bodySemiBold, fontSize: 14 }}
+                  rightContent={
+                    <Text style={{ color: colors.primary, fontFamily: typography.mono, fontSize: 20, fontWeight: '600' }}>
+                      {formatCurrency(calculations.takeHome)}
+                    </Text>
+                  }
+                />
 
-                <View style={styles.resultRow}>
-                  <Text style={[styles.resultLabel, { color: colors.textMuted, fontFamily: typography.body }]}>
-                    Effective Tax Rate
-                  </Text>
-                  <Text style={[styles.resultValue, { color: colors.text, fontFamily: typography.mono }]}>
-                    {formatPercentage(calculations.effectiveTaxRate)}
-                  </Text>
-                </View>
-              </View>
+                <ListItem
+                  title="Effective Tax Rate"
+                  titleStyle={{ color: colors.textMuted, fontFamily: typography.body, fontSize: 14 }}
+                  rightContent={
+                    <Text style={{ color: colors.text, fontFamily: typography.mono, fontSize: 16 }}>
+                      {formatPercentage(calculations.effectiveTaxRate)}
+                    </Text>
+                  }
+                />
+              </Card>
 
               <Text style={[styles.disclaimer, { color: colors.textMuted, fontFamily: typography.body }]}>
                 Based on UK {ukSchema.taxYear} tax year rates. Last updated: {ukSchema.lastUpdated}.{'\n'}
@@ -296,7 +265,6 @@ export const TaxCalculatorScreen = () => {
               </Text>
             </View>
           )}
-        </ScrollView>
       </Container>
     </SafeAreaView>
   );
@@ -320,48 +288,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: spacing.xs,
   },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: spacing.m,
-  },
-  currency: {
-    fontSize: 18,
-    marginRight: spacing.xs,
-  },
-  input: {
-    flex: 1,
-    fontSize: 18,
-    paddingVertical: spacing.m,
-    outlineStyle: 'none' as any,
-  },
-  resultCard: {
-    borderRadius: 12,
-    padding: spacing.l,
-    marginBottom: spacing.m,
-  },
-  resultRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: spacing.s,
-  },
-  resultLabel: {
-    fontSize: 14,
-  },
-  resultValue: {
-    fontSize: 16,
-  },
-  resultValueLarge: {
-    fontSize: 20,
-    fontWeight: '600',
-  },
-  divider: {
-    height: 1,
-    marginVertical: spacing.s,
-  },
   disclaimer: {
     fontSize: 12,
     fontStyle: 'italic',
@@ -372,14 +298,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.s,
-  },
-  planButton: {
-    paddingHorizontal: spacing.m,
-    paddingVertical: spacing.s,
-    borderRadius: 8,
-    borderWidth: 2,
-  },
-  planButtonText: {
-    fontSize: 14,
   },
 });

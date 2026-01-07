@@ -7,6 +7,7 @@
  * @author Lewis Goodwin <https://github.com/is-Lewis>
  */
 
+export { useBreakpoints } from './useBreakpoints';
 export { useClipboard } from './useClipboard';
 export { useHistory } from './useHistory';
 export { useDebounce } from './useDebounce';

@@ -3,19 +3,22 @@
  *
  * Provides consistent layout container with responsive max-width and padding.
  * Centres content on web when narrower than max width.
+ * Adapts padding based on screen size.
  *
  * @module components/Container
  * @author Lewis Goodwin <https://github.com/is-Lewis>
  */
 
 import React from 'react';
-import { View, StyleSheet, ViewStyle, Platform } from 'react-native';
+import { View, ScrollView, StyleSheet, ViewStyle, Platform } from 'react-native';
 import { spacing } from '../theme/spacing';
+import { useBreakpoints } from '../hooks/useBreakpoints';
 
 interface ContainerProps {
   children: React.ReactNode;
   style?: ViewStyle;
   maxWidth?: number;
+  scrollable?: boolean;
 }
 
 /**
@@ -24,6 +27,7 @@ interface ContainerProps {
  * @param children - Child components to render
  * @param style - Optional additional styles
  * @param maxWidth - Maximum width for content (default: 800)
+ * @param scrollable - Enable built-in scrolling (default: true). Wraps content in ScrollView.
  * @returns Container component
  *
  * @example
@@ -33,10 +37,40 @@ interface ContainerProps {
  * </Container>
  * ```
  */
-export const Container: React.FC<ContainerProps> = ({ children, style, maxWidth = 800 }) => {
+export const Container: React.FC<ContainerProps> = ({ 
+  children, 
+  style, 
+  maxWidth = 800,
+  scrollable = true,
+}) => {
+  const { isSM, isLG } = useBreakpoints();
+
+  const content = (
+    <View
+      style={[
+        styles.inner,
+        { maxWidth },
+        isSM && styles.innerSM,
+        isLG && styles.innerLG,
+      ]}
+    >
+      {children}
+    </View>
+  );
+
   return (
     <View style={[styles.outer, style]}>
-      <View style={[styles.inner, { maxWidth }]}>{children}</View>
+      {scrollable ? (
+        <ScrollView 
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {content}
+        </ScrollView>
+      ) : (
+        content
+      )}
     </View>
   );
 };
@@ -46,6 +80,13 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     flex: 1,
+  },
+  scrollView: {
+    width: '100%',
+  },
+  scrollContent: {
+    alignItems: 'center',
+    flexGrow: 1,
   },
   inner: {
     width: '100%',
@@ -57,5 +98,13 @@ const styles = StyleSheet.create({
         marginHorizontal: 'auto',
       },
     }),
+  },
+  innerSM: {
+    paddingHorizontal: spacing.s,
+    paddingTop: spacing.m,
+  },
+  innerLG: {
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.xxl,
   },
 });

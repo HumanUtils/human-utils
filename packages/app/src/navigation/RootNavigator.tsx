@@ -2,7 +2,11 @@ import React from 'react';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTheme } from '../theme';
-import { HomeScreen, UuidGeneratorScreen, SettingsScreen, TaxCalculatorScreen } from '../screens';
+import { HomeScreen, UuidGeneratorScreen, SettingsScreen, TaxCalculatorScreen, VatCalculatorScreen } from '../screens';
+import { ButtonDemoScreen } from '../screens/ButtonDemoScreen';
+import { FormDemoScreen } from '../screens/FormDemoScreen';
+import { InputDemoScreen } from '../screens/InputDemoScreen';
+import { TypographyDemoScreen } from '../screens/TypographyDemoScreen';
 import { CategoryScreen } from '../screens/CategoryScreen';
 import { Base64EncoderScreen } from '../screens/Base64EncoderScreen';
 import { JsonFormatterScreen } from '../screens/JsonFormatterScreen';
@@ -18,12 +22,17 @@ export type RootStackParamList = {
   Settings: undefined;
   UuidGenerator: undefined;
   Base64Encoder: undefined;
+  ButtonDemo: undefined;
+  FormDemo: undefined;
+  InputDemo: undefined;
   JsonFormatter: undefined;
   LoremIpsum: undefined;
   CaseConverter: undefined;
   UrlEncoder: undefined;
   TextCounter: undefined;
   TaxCalculator: undefined;
+  VatCalculator: undefined;
+  TypographyDemo: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -73,12 +82,17 @@ export const RootNavigator = () => {
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings - Human Utils' }} />
         <Stack.Screen name="UuidGenerator" component={UuidGeneratorScreen} options={{ title: 'UUID Generator - Human Utils' }} />
         <Stack.Screen name="Base64Encoder" component={Base64EncoderScreen} options={{ title: 'Base64 Encoder - Human Utils' }} />
+        <Stack.Screen name="ButtonDemo" component={ButtonDemoScreen} options={{ title: 'Button Demo - Human Utils' }} />
+        <Stack.Screen name="FormDemo" component={FormDemoScreen} options={{ title: 'Form Demo - Human Utils' }} />
+        <Stack.Screen name="InputDemo" component={InputDemoScreen} options={{ title: 'Input Demo - Human Utils' }} />
         <Stack.Screen name="JsonFormatter" component={JsonFormatterScreen} options={{ title: 'JSON Formatter - Human Utils' }} />
         <Stack.Screen name="LoremIpsum" component={LoremIpsumScreen} options={{ title: 'Lorem Ipsum Generator - Human Utils' }} />
         <Stack.Screen name="CaseConverter" component={CaseConverterScreen} options={{ title: 'Case Converter - Human Utils' }} />
         <Stack.Screen name="UrlEncoder" component={UrlEncoderScreen} options={{ title: 'URL Encoder - Human Utils' }} />
         <Stack.Screen name="TextCounter" component={TextCounterScreen} options={{ title: 'Text Counter - Human Utils' }} />
         <Stack.Screen name="TaxCalculator" component={TaxCalculatorScreen} options={{ title: 'Self-Employed Tax Calculator - Human Utils' }} />
+        <Stack.Screen name="VatCalculator" component={VatCalculatorScreen} options={{ title: 'VAT Calculator - Human Utils' }} />
+        <Stack.Screen name="TypographyDemo" component={TypographyDemoScreen} options={{ title: 'Typography Demo - Human Utils' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

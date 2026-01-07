@@ -25,7 +25,7 @@ export const TOOL_CATEGORIES = [
   { id: 'crypto', title: 'Security & Crypto', icon: Lock },
   { id: 'dev', title: 'Dev & Code', icon: Code },
   { id: 'network', title: 'Network & Web', icon: Globe },
-  { id: 'math', title: 'Math & Numbers', icon: Calculator },
+  { id: 'finance', title: 'Finance & Money', icon: Calculator },
   { id: 'colors', title: 'Colors & Images', icon: Palette },
 ];
 
@@ -90,8 +90,16 @@ export const TOOLS = [
     id: 'tax-calculator',
     title: 'Self-Employed Tax Calculator',
     description: 'Calculate UK self-employed tax, NI, and take-home pay',
-    categories: ['math'],
+    categories: ['finance'],
     icon: Receipt,
     route: 'TaxCalculator' as const,
+  },
+  {
+    id: 'vat-calculator',
+    title: 'VAT Calculator',
+    description: 'Calculate VAT - add or remove VAT',
+    categories: ['finance'],
+    icon: Calculator,
+    route: 'VatCalculator' as const,
   },
 ];

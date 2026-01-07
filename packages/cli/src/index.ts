@@ -41,4 +41,8 @@ export * from './text-counter/metadata';
 
 // Tax Calculator - re-export everything from the tool
 export * from './tax-calculator';
-export * from './tax-calculator/metadata';
+export { metadata as taxCalculatorMetadata } from './tax-calculator/metadata';
+
+// VAT Calculator - re-export everything from the tool
+export * from './vat-calculator';
+export { metadata as vatCalculatorMetadata, COMMON_VAT_RATES, VAT_INFO } from './vat-calculator/metadata';

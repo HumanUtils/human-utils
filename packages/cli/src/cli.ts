@@ -17,6 +17,7 @@ import { jsonCommand } from './commands/commands/json';
 import { loremCommand } from './commands/commands/lorem';
 import { textCounterCommand } from './commands/commands/text-counter';
 import { taxCalculatorCommand } from './commands/commands/tax-calculator';
+import { vatCalculatorCommand } from './commands/commands/vat-calculator';
 
 const program = new Command();
 
@@ -46,6 +47,7 @@ program.addCommand(jsonCommand);
 program.addCommand(loremCommand);
 program.addCommand(textCounterCommand);
 program.addCommand(taxCalculatorCommand);
+program.addCommand(vatCalculatorCommand);
 
 // Parse command line arguments
 program.parse();
